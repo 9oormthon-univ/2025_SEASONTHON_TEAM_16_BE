@@ -1,0 +1,12 @@
+server:
+  port: 8080
+  forward-headers-strategy: framework
+
+spring:
+  profiles:
+    active: local
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:9roomthon}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:1234}
