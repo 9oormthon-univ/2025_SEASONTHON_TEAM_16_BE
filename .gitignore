@@ -33,5 +33,14 @@ out/
 /nbdist/
 /.nb-gradle/
 
+# macOS metadata files
+.DS_Store
+**/.DS_Store
+
 ### VS Code ###
 .vscode/
+
+**/*.properties
+!gradle/wrapper/gradle-wrapper.properties
+src/main/resources/application-secret.yml
+src/main/resources/application.yml
