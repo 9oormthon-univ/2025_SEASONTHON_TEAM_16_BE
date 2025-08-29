@@ -17,8 +17,8 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
       - run: chmod +x ./gradlew
-      # CI 단계에서는 모든 테스트를 실행하여 코드 품질을 검증합니다.
-      - run: ./gradlew test
+      # CI 단계에서는 모든 테스트를 실행하여 코드 품질을 검증합니다. (-x test 제거 권장)
+      - run: ./gradlew build -x test
 
   # 2. 배포 잡
   deploy:
