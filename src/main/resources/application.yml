@@ -2,6 +2,13 @@ server:
   port: 8080
   forward-headers-strategy: framework
 
+cloud:
+  aws:
+    region:
+      static: ${S3_REGION:ap-southeast-2}
+    s3:
+      bucket: ${S3_BUCKETNAME:yein-s3}
+
 spring:
   profiles:
     active: local
