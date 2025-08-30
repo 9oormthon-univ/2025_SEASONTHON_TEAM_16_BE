@@ -20,6 +20,15 @@ spring:
     show-sql: true
     open-in-view: false
 
+jwt:
+  secretKey: ${JWT_SECRET_KEY}
+  access:
+    expiration: ${JWT_ACCESS_EXPIRATION:3600000}
+    header: ${JWT_ACCESS_HEADER:Authorization}
+  refresh:
+    expiration: ${JWT_REFRESH_EXPIRATION:3600000}
+    header: ${JWT_REFRESH_HEADER:RefreshToken}
+
 # Springdoc (Swagger UI)
 springdoc:
   api-docs:
