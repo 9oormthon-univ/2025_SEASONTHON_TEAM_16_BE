@@ -14,6 +14,10 @@ public enum ErrorStatus implements BaseErrorCode {
     MISSING_PARAMETER(HttpStatus.BAD_REQUEST, "VALID4002", "필수 파라미터가 누락되었습니다."),
     TYPE_MISMATCH(HttpStatus.BAD_REQUEST, "VALID4003", "파라미터 타입이 올바르지 않습니다."),
     FILE_IS_EMPTY(HttpStatus.BAD_REQUEST, "FILE4004", "업로드할 파일이 없습니다."),
+    FILE_DOWNLOAD_FAILED(HttpStatus.BAD_REQUEST, "FILE4005", "이미지 다운로드에 실패했습니다."),
+    FILE_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST, "FILE4006", "파일 크기가 10MB를 초과했습니다."),
+    INVALID_FILE_TYPE(HttpStatus.BAD_REQUEST, "FILE4007", "지원하지 않는 파일 형식입니다. (JPG, PNG, WEBP만 지원)"),
+    INVALID_FILE_NAME(HttpStatus.BAD_REQUEST, "FILE4008", "유효하지 않은 파일명입니다."),
 
     // 401 Unauthorized
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "AUTH401", "인증이 필요합니다."),
@@ -27,9 +31,9 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // 404 Not Found
     NOT_FOUND(HttpStatus.NOT_FOUND, "COMMON404", "요청한 리소스를 찾을 수 없습니다."),
-    RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "GEN4042", "리소스를 찾을 수 없습니다."),
-    ENDPOINT_NOT_FOUND(HttpStatus.NOT_FOUND, "GEN4043", "존재하지 않는 엔드포인트입니다."),
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4044", "사용자를 찾을 수 없습니다."),
+    RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "GEN4041", "리소스를 찾을 수 없습니다."),
+    ENDPOINT_NOT_FOUND(HttpStatus.NOT_FOUND, "GEN4042", "존재하지 않는 엔드포인트입니다."),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4043", "사용자를 찾을 수 없습니다."),
 
     // 405 Method Not Allowed
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "COMMON405", "허용되지 않는 HTTP 메서드입니다."),
@@ -41,9 +45,11 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // 500 Internal Server Error
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON500", "서버 에러, 관리자에게 문의 바랍니다."),
-    DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "DB5003", "데이터베이스 처리 중 오류가 발생했습니다."),
     S3_UPLOAD_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "S35001", "파일 업로드 중 오류가 발생했습니다."),
     S3_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "S35002", "파일 삭제 중 오류가 발생했습니다."),
+    DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "DB5003", "데이터베이스 처리 중 오류가 발생했습니다."),
+    AI_ANALYSIS_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "AI5004", "AI 분석 중 오류가 발생했습니다."),
+    FILE_READ_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "FILE5005", "파일 읽기에 실패했습니다."),
 
     // 502, 503, 504
     BAD_GATEWAY(HttpStatus.BAD_GATEWAY, "COMMON502", "불완전한 게이트웨이 응답을 받았습니다."),

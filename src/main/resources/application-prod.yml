@@ -1,0 +1,22 @@
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY_ID}
+      secret-key: ${AWS_SECRET_ACCESS_KEY}
+    region:
+      static: ${S3_REGION:ap-southeast-2}
+    s3:
+      bucket: ${S3_BUCKETNAME:yein-s3}
+
+google:
+  api:
+    key: ${GEMINI_API_KEY}
+
+jwt:
+  secretKey: ${JWT_SECRET_KEY}
+  access:
+    expiration: ${JWT_ACCESS_EXPIRATION}
+    header: ${JWT_ACCESS_HEADER:Authorization}
+  refresh:
+    expiration: ${JWT_REFRESH_EXPIRATION}
+    header: ${JWT_REFRESH_HEADER:RefreshToken}
