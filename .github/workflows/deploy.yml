@@ -83,4 +83,5 @@ jobs:
               -e JWT_REFRESH_EXPIRATION=${{ secrets.JWT_REFRESH_EXPIRATION }} \
               -e S3_REGION=${{ secrets.S3_REGION }} \
               -e S3_BUCKETNAME=${{ secrets.S3_BUCKETNAME }} \
+              -e GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }} \
               ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
