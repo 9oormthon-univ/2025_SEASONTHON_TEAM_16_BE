@@ -34,6 +34,7 @@ public enum ErrorStatus implements BaseErrorCode {
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "GEN4041", "리소스를 찾을 수 없습니다."),
     ENDPOINT_NOT_FOUND(HttpStatus.NOT_FOUND, "GEN4042", "존재하지 않는 엔드포인트입니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4043", "사용자를 찾을 수 없습니다."),
+    GALLERY_NOT_FOUND(HttpStatus.NOT_FOUND, "GALLERY4044", "필사 갤러리를 찾을 수 없습니다."),
 
     // 405 Method Not Allowed
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "COMMON405", "허용되지 않는 HTTP 메서드입니다."),
