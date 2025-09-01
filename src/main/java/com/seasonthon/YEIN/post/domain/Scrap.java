@@ -28,6 +28,16 @@ public class Scrap extends BaseEntity {
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
+    /**
+     * Creates a Scrap linking a User to a Post.
+     *
+     * <p>Prefer using the Lombok-generated builder; this constructor initializes the association
+     * between the given user and post. Both parameters are required and persisted as non-nullable
+     * foreign keys.
+     *
+     * @param user the user who created the scrap (must not be null)
+     * @param post the post being scrapped (must not be null)
+     */
     @Builder
     public Scrap(User user, Post post) {
         this.user = user;

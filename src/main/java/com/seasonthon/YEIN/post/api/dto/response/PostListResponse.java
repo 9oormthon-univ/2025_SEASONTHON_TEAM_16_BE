@@ -36,6 +36,14 @@ public record PostListResponse(
         String imageUrl
 ) {
 
+    /**
+     * Creates a PostListResponse DTO from a Post domain object and a scraped flag.
+     *
+     * @param post      source Post to map from; must contain a non-null User with a nickname
+     * @param isScraped whether the current user has scraped the post (may be null)
+     * @return a new PostListResponse populated from the given post and scraped flag
+     * @throws NullPointerException if {@code post} or {@code post.getUser()} is null
+     */
     public static PostListResponse from(Post post, Boolean isScraped) {
         return new PostListResponse(
                 post.getId(),

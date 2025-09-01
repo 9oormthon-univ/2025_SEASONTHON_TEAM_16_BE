@@ -19,6 +19,14 @@ public class ScrapController {
 
     private final ScrapService scrapService;
 
+    /**
+     * Toggle the scrap state for a post on behalf of the authenticated user.
+     *
+     * If the user has not scraped the post, this will add a scrap; if the post was already scraped by the user, this will remove it.
+     *
+     * @param postId the ID of the post to toggle scrap for
+     * @return a 200 OK response containing an ApiResponse<Boolean> where the boolean is true if the post is now scraped, or false if the scrap was removed
+     */
     @PostMapping("/{postId}")
     @Operation(summary = "게시글 스크랩 토글", description = "게시글을 스크랩하거나 스크랩을 취소합니다.")
     public ResponseEntity<ApiResponse<Boolean>> toggleScrap(

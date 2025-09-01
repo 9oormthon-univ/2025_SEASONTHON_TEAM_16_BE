@@ -39,6 +39,13 @@ public record PostResponse(
         LocalDateTime updatedAt
 ) {
 
+    /**
+     * Creates a PostResponse DTO from a domain Post and the current user's scrape state.
+     *
+     * @param post the domain Post to convert (its user and timestamps are read)
+     * @param isScraped whether the current user has scraped the post
+     * @return a new PostResponse populated from the provided Post and scrape flag
+     */
     public static PostResponse from(Post post, Boolean isScraped) {
         return new PostResponse(
                 post.getId(),

@@ -56,6 +56,21 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Post> communities = new ArrayList<>();
 
+    /**
+     * Constructs a User with the provided identity and authentication attributes.
+     *
+     * <p>Initializes email, nickname, profile image URL, role, social provider, OAuth identifier,
+     * and the initial last-login timestamp. Fields such as `id`, `refreshToken`, `galleries`,
+     * and `communities` are not set by this constructor.</p>
+     *
+     * @param email the user's email address (unique)
+     * @param nickname the user's display name
+     * @param profileImageUrl URL of the user's profile image
+     * @param roleType the user's role
+     * @param socialProvider the social login provider, if any
+     * @param oauthId the provider-specific OAuth identifier
+     * @param lastLoginAt initial last-login timestamp (may be null)
+     */
     @Builder
     public User(String email, String nickname, String profileImageUrl, RoleType roleType, SocialProvider socialProvider, String oauthId, LocalDateTime lastLoginAt) {
         this.email = email;
