@@ -31,7 +31,7 @@ public class HandwritingAnalysisController {
             @RequestParam("image") MultipartFile image,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        HandwritingAnalysisResponse response = analysisService.analyzeHandwriting(image);
+        HandwritingAnalysisResponse response = analysisService.analyzeHandwriting(image, userDetails.getUserId());
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
 

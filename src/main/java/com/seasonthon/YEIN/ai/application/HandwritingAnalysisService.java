@@ -6,9 +6,13 @@ import com.google.genai.types.Content;
 import com.google.genai.types.GenerateContentResponse;
 import com.google.genai.types.Part;
 import com.seasonthon.YEIN.ai.api.dto.response.HandwritingAnalysisResponse;
+import com.seasonthon.YEIN.gallery.domain.Gallery;
+import com.seasonthon.YEIN.gallery.domain.repository.GalleryRepository;
 import com.seasonthon.YEIN.global.code.status.ErrorStatus;
 import com.seasonthon.YEIN.global.exception.GeneralException;
 import com.seasonthon.YEIN.global.s3.S3UploadService;
+import com.seasonthon.YEIN.user.domain.User;
+import com.seasonthon.YEIN.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,13 +30,15 @@ public class HandwritingAnalysisService {
     private final Client geminiClient;
     private final ObjectMapper objectMapper;
     private final S3UploadService s3UploadService;
+    private final GalleryRepository galleryRepository;
+    private final UserRepository userRepository;
 
     private static final List<String> ALLOWED_TYPES = Arrays.asList(
             "image/jpeg", "image/jpg", "image/png", "image/webp"
     );
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
-    public HandwritingAnalysisResponse analyzeHandwriting(MultipartFile image) {
+    public HandwritingAnalysisResponse analyzeHandwriting(MultipartFile image, Long userId) {
         String imageUrl = null;
 
         try {
@@ -44,6 +50,9 @@ public class HandwritingAnalysisService {
 
             // 3. AI 분석 수행
             HandwritingAnalysisResponse response = performAIAnalysis(image);
+
+            User user = getUser(userId);
+            saveToGallery(user, imageUrl, response);
             return response;
 
         } catch (Exception e) {
@@ -193,5 +202,30 @@ public class HandwritingAnalysisService {
         } catch (Exception deleteException) {
             log.warn("업로드된 이미지 정리 실패: {}", imageUrl, deleteException);
         }
+    }
+
+    private void saveToGallery(User user, String imageUrl, HandwritingAnalysisResponse response) {
+        try {
+            Gallery gallery = Gallery.builder()
+                    .user(user)
+                    .imageUrl(imageUrl)
+                    .alignmentScore(response.alignmentScore())
+                    .spacingScore(response.spacingScore())
+                    .consistencyScore(response.consistencyScore())
+                    .lengthScore(response.lengthScore())
+                    .totalScore(response.totalScore())
+                    .feedback(response.feedback())
+                    .detailedAnalysis(response.detailedAnalysis())
+                    .build();
+
+            galleryRepository.save(gallery);
+
+        } catch (Exception e) {
+            log.error("갤러리 저장 실패: userId={}, imageUrl={}", user.getId(), imageUrl, e);
+        }
+    }
+
+    private User getUser(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
     }
 }

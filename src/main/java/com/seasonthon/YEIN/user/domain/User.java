@@ -1,5 +1,6 @@
 package com.seasonthon.YEIN.user.domain;
 
+import com.seasonthon.YEIN.gallery.domain.Gallery;
 import com.seasonthon.YEIN.global.entity.BaseEntity;
 import com.seasonthon.YEIN.global.oauth.domain.SocialProvider;
 import jakarta.persistence.*;
@@ -9,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "users")
 @Entity
@@ -45,6 +48,9 @@ public class User extends BaseEntity {
 
     @Column(name = "last_login_at")
     private LocalDateTime lastLoginAt;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Gallery> galleries = new ArrayList<>();
 
     @Builder
     public User(String email, String nickname, String profileImageUrl, RoleType roleType, SocialProvider socialProvider, String oauthId, LocalDateTime lastLoginAt) {
