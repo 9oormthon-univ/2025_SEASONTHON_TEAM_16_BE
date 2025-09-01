@@ -4,6 +4,7 @@ import com.seasonthon.YEIN.post.domain.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -26,4 +27,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "LOWER(p.author) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
             "ORDER BY p.createdAt DESC, p.id DESC")
     Page<Post> findByUserIdWithFilter(@Param("userId") Long userId, @Param("keyword") String keyword, Pageable pageable);
+
+    @Modifying
+    @Query("UPDATE Post p SET p.viewCount = p.viewCount + 1 WHERE p.id = :id")
+    int incrementViewCount(@Param("id") Long postId);
 }

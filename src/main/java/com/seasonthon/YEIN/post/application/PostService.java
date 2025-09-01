@@ -69,8 +69,8 @@ public class PostService {
 
     @Transactional
     public PostResponse getPostDetail(Long postId, Long userId) {
+        postRepository.incrementViewCount(postId); // 동시성 문제 해결을 위해 DB에서 직접 조회
         Post post = getPost(postId);
-        post.incrementViewCount();
 
         boolean isScraped = scrapRepository.existsByUserIdAndPostId(userId, postId);
         return PostResponse.from(post, isScraped);
