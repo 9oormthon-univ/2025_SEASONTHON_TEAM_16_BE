@@ -1,5 +1,6 @@
 package com.seasonthon.YEIN.user.domain;
 
+import com.seasonthon.YEIN.post.domain.Post;
 import com.seasonthon.YEIN.gallery.domain.Gallery;
 import com.seasonthon.YEIN.global.entity.BaseEntity;
 import com.seasonthon.YEIN.global.oauth.domain.SocialProvider;
@@ -51,6 +52,9 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Gallery> galleries = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Post> communities = new ArrayList<>();
 
     @Builder
     public User(String email, String nickname, String profileImageUrl, RoleType roleType, SocialProvider socialProvider, String oauthId, LocalDateTime lastLoginAt) {
