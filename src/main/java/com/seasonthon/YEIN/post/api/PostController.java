@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -48,8 +49,8 @@ public class PostController {
             @RequestParam(required = false) String sortBy,
             @Parameter(description = "페이징 정보")
             Pageable pageable,
-            @AuthenticationPrincipal CustomUserDetails UserDetails) {
-        Page<PostListResponse> response = postService.getPosts(keyword, sortBy, pageable, UserDetails.getUserId());
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Page<PostListResponse> response = postService.getPosts(keyword, sortBy, pageable, userDetails.getUserId());
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
 
