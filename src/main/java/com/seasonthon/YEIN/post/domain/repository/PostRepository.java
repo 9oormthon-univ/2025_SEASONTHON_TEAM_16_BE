@@ -10,15 +10,20 @@ import org.springframework.data.repository.query.Param;
 public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("SELECT p FROM Post p WHERE " +
-            "(:keyword IS NULL OR :keyword = '' OR p.quote LIKE %:keyword% OR p.author LIKE %:keyword%) " +
+            "(:keyword IS NULL OR :keyword = '' OR " +
+            "LOWER(p.quote) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(p.author) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
             "ORDER BY " +
             "CASE WHEN :sortBy = 'view' THEN p.viewCount END DESC, " +
             "CASE WHEN :sortBy = 'scrap' THEN p.scrapCount END DESC, " +
-            "CASE WHEN :sortBy = 'latest' THEN p.createdAt END DESC")
+            "CASE WHEN :sortBy = 'latest' THEN p.createdAt END DESC, " +
+            "p.createdAt DESC, p.id DESC")
     Page<Post> findPostsWithFilter(@Param("keyword") String keyword, @Param("sortBy") String sortBy, Pageable pageable);
 
     @Query("SELECT p FROM Post p WHERE p.user.id = :userId AND " +
-            "(:keyword IS NULL OR :keyword = '' OR p.quote LIKE %:keyword% OR p.author LIKE %:keyword%) " +
-            "ORDER BY p.createdAt DESC")
+            "(:keyword IS NULL OR :keyword = '' OR " +
+            "LOWER(p.quote) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+            "LOWER(p.author) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
+            "ORDER BY p.createdAt DESC, p.id DESC")
     Page<Post> findByUserIdWithFilter(@Param("userId") Long userId, @Param("keyword") String keyword, Pageable pageable);
 }
