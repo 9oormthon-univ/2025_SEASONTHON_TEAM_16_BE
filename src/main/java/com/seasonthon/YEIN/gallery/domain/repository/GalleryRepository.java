@@ -2,9 +2,11 @@ package com.seasonthon.YEIN.gallery.domain.repository;
 
 import com.seasonthon.YEIN.gallery.domain.Gallery;
 import com.seasonthon.YEIN.user.domain.User;
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -13,16 +15,24 @@ public interface GalleryRepository extends JpaRepository<Gallery, Long> {
 
     Optional<Gallery> findByIdAndUser(Long id, User user);
 
-    Page<Gallery> findByUserOrderByCreatedAtDesc(User user, Pageable pageable);
-
-    // 기간별 조회 - 이번주/이번달/커스텀 기간
-    Page<Gallery> findByUserAndCreatedAtBetweenOrderByCreatedAtDesc(User user, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable
+    @Query("SELECT g FROM Gallery g " +
+            "WHERE g.user = :user " +
+            "AND (:startDate IS NULL OR g.createdAt >= :startDate) " +
+            "AND (:endDate IS NULL OR g.createdAt <= :endDate) " +
+            "AND (:minScore IS NULL OR g.totalScore >= :minScore) " +
+            "AND (:maxScore IS NULL OR g.totalScore <= :maxScore) " +
+            "ORDER BY " +
+            "CASE WHEN :sortBy = 'score_desc' THEN g.totalScore END DESC, " +
+            "CASE WHEN :sortBy = 'score_asc' THEN g.totalScore END ASC, " +
+            "CASE WHEN :sortBy = 'date_asc' THEN g.createdAt END ASC, " +
+            "CASE WHEN :sortBy = 'date_desc' OR :sortBy IS NULL THEN g.createdAt END DESC")
+    Page<Gallery> findGalleriesWithDynamicSort(
+            @Param("user") User user,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
+            @Param("minScore") Integer minScore,
+            @Param("maxScore") Integer maxScore,
+            @Param("sortBy") String sortBy,
+            Pageable pageable
     );
-
-    // 점수별 조회 - 점수 범위 필터링
-    Page<Gallery> findByUserAndTotalScoreBetweenOrderByCreatedAtDesc(User user, Integer minScore, Integer maxScore, Pageable pageable);
-
-    // 기간 + 점수 복합 필터링
-    Page<Gallery> findByUserAndCreatedAtBetweenAndTotalScoreBetweenOrderByCreatedAtDesc(User user, LocalDateTime startDate, LocalDateTime endDate,
-                                                                                        Integer minScore, Integer maxScore, Pageable pageable);
 }

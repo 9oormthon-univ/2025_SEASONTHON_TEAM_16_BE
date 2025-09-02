@@ -42,10 +42,13 @@ public class GalleryController {
             @Parameter(description = "최대 점수 (0-100)", example = "100")
             @RequestParam(required = false) Integer maxScore,
 
+            @Parameter(description = "정렬 기준: date_desc(최신순), date_asc(오래된순), score_desc(점수 높은순), score_asc(점수 낮은순)", example = "date_desc")
+            @RequestParam(defaultValue = "date_desc") String sortBy,
+
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<GalleryResponse> galleries = galleryService.getGalleriesWithFilters(userDetails.getUserId(), period, minScore, maxScore, pageable);
+        Page<GalleryResponse> galleries = galleryService.getGalleriesWithFilters(userDetails.getUserId(), period, minScore, maxScore, sortBy, pageable);
 
         return ResponseEntity.ok(ApiResponse.onSuccess(galleries));
     }
