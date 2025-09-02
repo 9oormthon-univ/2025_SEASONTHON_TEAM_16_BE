@@ -81,6 +81,7 @@ public class GalleryService {
                 gallery.getLengthScore(),
                 gallery.getTotalScore(),
                 gallery.getFeedback(),
+                gallery.getStrengths(),
                 gallery.getDetailedAnalysis(),
                 gallery.getCreatedAt()
         );
