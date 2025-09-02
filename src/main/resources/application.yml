@@ -25,6 +25,17 @@ spring:
       max-file-size: 10MB        # 개별 파일 최대 크기
       max-request-size: 100MB     # 전체 요청 최대 크기 (여러 파일 업로드 시)
 
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+
 # Springdoc (Swagger UI)
 springdoc:
   api-docs:

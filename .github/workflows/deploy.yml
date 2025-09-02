@@ -65,15 +65,18 @@ jobs:
             # ECR 로그인
             aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
             
+            # 
+            docker run -d --name redis-server --restart unless-stopped -p 6379:6379 redis:7-alpine || docker start redis-server
+            
             # 기존 컨테이너 중지 및 삭제
             docker stop my-app || true
             docker rm my-app || true
             
-            # 수정된 부분: 올바른 ECR 주소 사용
+            # 올바른 ECR 주소 사용
             docker pull ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
             
             # 새 컨테이너 실행 (환경 변수 전달)
-            docker run -d --name my-app -p 8080:8080 \
+            docker run -d --name my-app --network host \
               -e DB_HOST=${{ secrets.DB_HOST }} \
               -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
               -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
