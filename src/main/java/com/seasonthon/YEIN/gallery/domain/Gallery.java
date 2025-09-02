@@ -43,13 +43,16 @@ public class Gallery extends BaseEntity {
     @Column(name = "feedback", columnDefinition = "TEXT")
     private String feedback;
 
+    @Column(name = "strengths", columnDefinition = "TEXT")
+    private String strengths;
+
     @Column(name = "detailed_analysis", columnDefinition = "TEXT")
     private String detailedAnalysis;
 
     @Builder
     public Gallery(User user, String imageUrl, Integer alignmentScore, Integer spacingScore,
                    Integer consistencyScore, Integer lengthScore, Integer totalScore,
-                   String feedback, String detailedAnalysis) {
+                   String feedback, String strengths, String detailedAnalysis) {
         this.user = user;
         this.imageUrl = imageUrl;
         this.alignmentScore = alignmentScore;
@@ -58,6 +61,7 @@ public class Gallery extends BaseEntity {
         this.lengthScore = lengthScore;
         this.totalScore = totalScore;
         this.feedback = feedback;
+        this.strengths = strengths;
         this.detailedAnalysis = detailedAnalysis;
     }
 }

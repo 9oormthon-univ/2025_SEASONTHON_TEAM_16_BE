@@ -162,6 +162,7 @@ public class HandwritingAnalysisService {
                 "lengthScore": 점수,
                 "totalScore": 총점,
                 "feedback": "구체적인 개선사항과 잘한 점을 포함한 피드백",
+                "strengths": "잘한 점들과 칭찬할 부분들",
                 "detailedAnalysis": "필사한 글의 의미 분석 - 주제, 메시지, 감정, 교훈 등을 포함"
               }
               """;
@@ -215,6 +216,7 @@ public class HandwritingAnalysisService {
                     .lengthScore(response.lengthScore())
                     .totalScore(response.totalScore())
                     .feedback(response.feedback())
+                    .strengths(response.strengths())
                     .detailedAnalysis(response.detailedAnalysis())
                     .build();
 

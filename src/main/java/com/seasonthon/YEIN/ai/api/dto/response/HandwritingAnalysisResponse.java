@@ -23,6 +23,9 @@ public record HandwritingAnalysisResponse(
         @Schema(description = "AI 피드백 및 개선사항")
         String feedback,
 
+        @Schema(description = "잘한점과 칭찬")
+        String strengths,
+
         @Schema(description = "필사한 글의 의미 분석")
         String detailedAnalysis
 
@@ -31,6 +34,7 @@ public record HandwritingAnalysisResponse(
         return new HandwritingAnalysisResponse(
                 12, 12, 12, 12, 48,
                 "분석 중 오류가 발생했습니다.",
+                "분석을 완료하지 못했습니다.",
                 "글의 의미를 분석할 수 없습니다."
         );
     }

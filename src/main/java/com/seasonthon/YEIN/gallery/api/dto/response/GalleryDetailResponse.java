@@ -31,6 +31,9 @@ public record GalleryDetailResponse(
         @Schema(description = "AI 피드백", example = "전체적으로 정렬이 잘 되어 있고, 글자 간격도 균등합니다. 일관성 있는 글씨체로 작성하셨네요.")
         String feedback,
 
+        @Schema(description = "잘한점과 칭찬", example = "간격이 잘 맞습니다.")
+        String strengths,
+
         @Schema(description = "필사 내용 분석", example = "이 글은 자기계발에 관한 내용으로, 긍정적인 마인드셋의 중요성을 강조하고 있습니다.")
         String detailedAnalysis,
 
