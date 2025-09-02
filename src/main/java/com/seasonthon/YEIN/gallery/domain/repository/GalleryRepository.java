@@ -2,11 +2,11 @@ package com.seasonthon.YEIN.gallery.domain.repository;
 
 import com.seasonthon.YEIN.gallery.domain.Gallery;
 import com.seasonthon.YEIN.user.domain.User;
-import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -25,7 +25,8 @@ public interface GalleryRepository extends JpaRepository<Gallery, Long> {
             "CASE WHEN :sortBy = 'score_desc' THEN g.totalScore END DESC, " +
             "CASE WHEN :sortBy = 'score_asc' THEN g.totalScore END ASC, " +
             "CASE WHEN :sortBy = 'date_asc' THEN g.createdAt END ASC, " +
-            "CASE WHEN :sortBy = 'date_desc' OR :sortBy IS NULL THEN g.createdAt END DESC")
+            "CASE WHEN :sortBy = 'date_desc' OR :sortBy IS NULL THEN g.createdAt END DESC, " +
+            "g.id DESC")
     Page<Gallery> findGalleriesWithDynamicSort(
             @Param("user") User user,
             @Param("startDate") LocalDateTime startDate,
