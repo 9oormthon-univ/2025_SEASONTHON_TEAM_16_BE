@@ -46,6 +46,8 @@ dependencies {
     implementation platform('software.amazon.awssdk:bom:2.20.27')
     // Gemini API
     implementation 'com.google.genai:google-genai:1.15.0'
+    // Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 tasks.named('test') {

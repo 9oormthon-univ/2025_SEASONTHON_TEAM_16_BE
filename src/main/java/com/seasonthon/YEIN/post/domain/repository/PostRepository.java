@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface PostRepository extends JpaRepository<Post, Long> {
 
     @EntityGraph(attributePaths = "user")
@@ -34,4 +36,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Modifying
     @Query("UPDATE Post p SET p.viewCount = p.viewCount + 1 WHERE p.id = :id")
     int incrementViewCount(@Param("id") Long postId);
+
+    @Query("SELECT p.id FROM Post p")
+    List<Long> findAllPostIds();
 }
