@@ -26,27 +26,19 @@ public class GalleryService {
     private final GalleryRepository galleryRepository;
     private final UserRepository userRepository;
 
-    public Page<GalleryResponse> getGalleriesWithFilters(Long userId, String period, Integer minScore, Integer maxScore, Pageable pageable) {
+    public Page<GalleryResponse> getGalleriesWithFilters(Long userId, String period, Integer minScore, Integer maxScore, String sortBy, Pageable pageable) {
         LocalDateTime startDate = calculateStartDate(period);
-        Page<Gallery> galleries;
         User user = getUser(userId);
 
-        if (startDate != null && minScore != null && maxScore != null) {
-            // 기간 + 점수 필터링
-            galleries = galleryRepository.findByUserAndCreatedAtBetweenAndTotalScoreBetweenOrderByCreatedAtDesc(
-                            user, startDate, LocalDateTime.now(), minScore, maxScore, pageable);
-        } else if (startDate != null) {
-            // 기간별 필터링
-            galleries = galleryRepository.findByUserAndCreatedAtBetweenOrderByCreatedAtDesc(
-                    user, startDate, LocalDateTime.now(), pageable);
-        } else if (minScore != null && maxScore != null) {
-            // 점수별 필터링
-            galleries = galleryRepository.findByUserAndTotalScoreBetweenOrderByCreatedAtDesc(
-                            user, minScore, maxScore, pageable);
-        } else {
-            // 전체 조회
-            galleries = galleryRepository.findByUserOrderByCreatedAtDesc(user, pageable);
-        }
+        Page<Gallery> galleries = galleryRepository.findGalleriesWithDynamicSort(
+                user,
+                startDate,
+                LocalDateTime.now(),
+                minScore,
+                maxScore,
+                sortBy,
+                pageable
+        );
 
         return galleries.map(this::toGalleryResponse);
     }
@@ -95,6 +87,7 @@ public class GalleryService {
     }
 
     private User getUser(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+        return userRepository.findById(userId).orElseThrow(() -> new
+                GeneralException(ErrorStatus.USER_NOT_FOUND));
     }
 }
