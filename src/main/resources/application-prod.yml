@@ -20,3 +20,8 @@ jwt:
   refresh:
     expiration: ${JWT_REFRESH_EXPIRATION}
     header: ${JWT_REFRESH_HEADER:RefreshToken}
+
+spring:
+  data:
+    redis:
+      password: ${REDIS_PASSWORD}

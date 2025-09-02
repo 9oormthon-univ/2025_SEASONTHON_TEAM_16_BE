@@ -65,8 +65,11 @@ jobs:
             # ECR 로그인
             aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
             
-            # 
-            docker run -d --name redis-server --restart unless-stopped -p 6379:6379 redis:7-alpine || docker start redis-server
+            # redis 설정
+            docker run -d --name redis-server --restart unless-stopped \
+            -p 127.0.0.1:6379:6379 \
+            redis:7-alpine redis-server --requirepass "${{ secrets.REDIS_PASSWORD }}" \
+            || docker start redis-server
             
             # 기존 컨테이너 중지 및 삭제
             docker stop my-app || true
@@ -89,4 +92,5 @@ jobs:
               -e S3_REGION=${{ secrets.S3_REGION }} \
               -e S3_BUCKETNAME=${{ secrets.S3_BUCKETNAME }} \
               -e GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }} \
+              -e REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }} \
               ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}:${{ github.sha }}
