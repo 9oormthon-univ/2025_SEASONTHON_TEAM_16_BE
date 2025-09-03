@@ -6,6 +6,7 @@ import com.google.genai.types.Content;
 import com.google.genai.types.GenerateContentResponse;
 import com.google.genai.types.Part;
 import com.seasonthon.YEIN.ai.api.dto.response.HandwritingAnalysisResponse;
+import com.seasonthon.YEIN.gallery.api.dto.request.GalleryUploadRequest;
 import com.seasonthon.YEIN.gallery.domain.Gallery;
 import com.seasonthon.YEIN.gallery.domain.repository.GalleryRepository;
 import com.seasonthon.YEIN.global.code.status.ErrorStatus;
@@ -38,7 +39,7 @@ public class HandwritingAnalysisService {
     );
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
-    public HandwritingAnalysisResponse analyzeHandwriting(MultipartFile image, Long userId) {
+    public HandwritingAnalysisResponse analyzeHandwriting(MultipartFile image, GalleryUploadRequest request, Long userId) {
         String imageUrl = null;
 
         try {
@@ -52,7 +53,7 @@ public class HandwritingAnalysisService {
             HandwritingAnalysisResponse response = performAIAnalysis(image);
 
             User user = getUser(userId);
-            saveToGallery(user, imageUrl, response);
+            saveToGallery(user, imageUrl, request, response);
             return response;
 
         } catch (Exception e) {
@@ -205,11 +206,13 @@ public class HandwritingAnalysisService {
         }
     }
 
-    private void saveToGallery(User user, String imageUrl, HandwritingAnalysisResponse response) {
+    private void saveToGallery(User user, String imageUrl, GalleryUploadRequest request, HandwritingAnalysisResponse response) {
         try {
             Gallery gallery = Gallery.builder()
                     .user(user)
                     .imageUrl(imageUrl)
+                    .title(request.title())
+                    .moodTags(request.moodTags())
                     .alignmentScore(response.alignmentScore())
                     .spacingScore(response.spacingScore())
                     .consistencyScore(response.consistencyScore())

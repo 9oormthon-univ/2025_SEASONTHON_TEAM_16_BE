@@ -3,17 +3,22 @@ package com.seasonthon.YEIN.ai.api;
 import com.seasonthon.YEIN.ai.api.dto.response.AnalysisCriteriaResponse;
 import com.seasonthon.YEIN.ai.api.dto.response.HandwritingAnalysisResponse;
 import com.seasonthon.YEIN.ai.application.HandwritingAnalysisService;
+import com.seasonthon.YEIN.gallery.api.dto.request.GalleryUploadRequest;
+import com.seasonthon.YEIN.gallery.domain.MoodTag;
 import com.seasonthon.YEIN.global.code.dto.ApiResponse;
 import com.seasonthon.YEIN.global.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Set;
 
 @Tag(name = "필사 이미지 분석 API", description = "AI를 사용하여 필사 이미지 분석 및 점수 평가")
 @RestController
@@ -29,9 +34,11 @@ public class HandwritingAnalysisController {
     public ResponseEntity<ApiResponse<HandwritingAnalysisResponse>> analyzeHandwriting(
             @Parameter(description = "분석할 손글씨 이미지 파일 (JPG, PNG, WEBP 지원, 최대 10MB)", required = true)
             @RequestParam("image") MultipartFile image,
+            @Parameter(description = "갤러리 업로드 정보", required = true)
+            @Valid @RequestPart("data") GalleryUploadRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        HandwritingAnalysisResponse response = analysisService.analyzeHandwriting(image, userDetails.getUserId());
+        HandwritingAnalysisResponse response = analysisService.analyzeHandwriting(image, request, userDetails.getUserId());
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
 

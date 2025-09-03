@@ -3,6 +3,7 @@ package com.seasonthon.YEIN.gallery.application;
 import com.seasonthon.YEIN.gallery.api.dto.response.GalleryDetailResponse;
 import com.seasonthon.YEIN.gallery.api.dto.response.GalleryResponse;
 import com.seasonthon.YEIN.gallery.domain.Gallery;
+import com.seasonthon.YEIN.gallery.domain.MoodTag;
 import com.seasonthon.YEIN.gallery.domain.repository.GalleryRepository;
 import com.seasonthon.YEIN.global.code.status.ErrorStatus;
 import com.seasonthon.YEIN.global.exception.GeneralException;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -65,6 +67,8 @@ public class GalleryService {
     private GalleryResponse toGalleryResponse(Gallery gallery) {
         return new GalleryResponse(
                 gallery.getId(),
+                gallery.getTitle(),
+                gallery.getMoodTags(),
                 gallery.getImageUrl(),
                 gallery.getTotalScore(),
                 gallery.getCreatedAt()
@@ -74,6 +78,8 @@ public class GalleryService {
     private GalleryDetailResponse toGalleryDetailResponse(Gallery gallery) {
         return new GalleryDetailResponse(
                 gallery.getId(),
+                gallery.getTitle(),
+                gallery.getMoodTags(),
                 gallery.getImageUrl(),
                 gallery.getAlignmentScore(),
                 gallery.getSpacingScore(),
