@@ -32,11 +32,17 @@ public record PostListResponse(
         @Schema(description = "현재 사용자의 스크랩 여부", example = "true")
         Boolean isScraped,
 
+        @Schema(description = "추천수", example = "23")
+        Integer likeCount,
+
+        @Schema(description = "현재 사용자의 추천 여부", example = "true")
+        Boolean isLiked,
+
         @Schema(description = "첨부 이미지 URL", example = "https://example.com/image.jpg")
         String imageUrl
 ) {
 
-    public static PostListResponse from(Post post, Boolean isScraped) {
+    public static PostListResponse from(Post post, Boolean isScraped, Boolean isLiked) {
         return new PostListResponse(
                 post.getId(),
                 post.getQuote(),
@@ -46,6 +52,8 @@ public record PostListResponse(
                 post.getViewCount(),
                 post.getScrapCount(),
                 isScraped,
+                post.getLikeCount(),
+                isLiked,
                 post.getImageUrl()
         );
     }

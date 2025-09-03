@@ -32,6 +32,12 @@ public record PostResponse(
         @Schema(description = "작성자 닉네임", example = "글귀러버")
         String createdByNickname,
 
+        @Schema(description = "추천수", example = "23")
+        Integer likeCount,
+
+        @Schema(description = "현재 사용자의 추천 여부", example = "true")
+        Boolean isLiked,
+
         @Schema(description = "생성일시", example = "2024-03-15T14:30:00")
         LocalDateTime createdAt,
 
@@ -39,7 +45,7 @@ public record PostResponse(
         LocalDateTime updatedAt
 ) {
 
-    public static PostResponse from(Post post, Boolean isScraped) {
+    public static PostResponse from(Post post, Boolean isScraped, Boolean isLiked) {
         return new PostResponse(
                 post.getId(),
                 post.getQuote(),
@@ -49,6 +55,8 @@ public record PostResponse(
                 post.getScrapCount(),
                 isScraped,
                 post.getUser().getNickname(),
+                post.getLikeCount(),
+                isLiked,
                 post.getCreatedAt(),
                 post.getUpdatedAt()
         );

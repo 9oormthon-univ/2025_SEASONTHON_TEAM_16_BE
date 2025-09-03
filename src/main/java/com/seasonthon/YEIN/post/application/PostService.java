@@ -6,7 +6,9 @@ import com.seasonthon.YEIN.global.s3.S3UploadService;
 import com.seasonthon.YEIN.post.api.dto.request.PostRequest;
 import com.seasonthon.YEIN.post.api.dto.response.PostListResponse;
 import com.seasonthon.YEIN.post.api.dto.response.PostResponse;
+import com.seasonthon.YEIN.post.domain.Like;
 import com.seasonthon.YEIN.post.domain.Post;
+import com.seasonthon.YEIN.post.domain.repository.LikeRepository;
 import com.seasonthon.YEIN.post.domain.repository.PostRepository;
 import com.seasonthon.YEIN.post.domain.repository.ScrapRepository;
 import com.seasonthon.YEIN.user.domain.User;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -30,6 +33,7 @@ public class PostService {
     private final UserRepository userRepository;
     private final ScrapRepository scrapRepository;
     private final S3UploadService s3UploadService;
+    private final LikeRepository likeRepository;
 
     @Transactional
     public PostResponse createPost(PostRequest request, Long userId, MultipartFile image) {
@@ -48,23 +52,28 @@ public class PostService {
                 .build();
 
         Post savedPost = postRepository.save(post);
-        return PostResponse.from(savedPost, false);
+        return PostResponse.from(savedPost, false, false);
     }
 
     public Page<PostListResponse> getPosts(String keyword, String sortBy, Pageable pageable, Long userId) {
         String sort = (sortBy != null) ? sortBy : "latest";
         Page<Post> posts = postRepository.findPostsWithFilter(keyword, sort, pageable);
 
-        // 현재 페이지의 모든 게시글 ID 수집
+        if (userId == null) {
+            // 비인가 사용자: 스크랩/라이크 상태 모두 false
+            return posts.map(post -> PostListResponse.from(post, false, false));
+        }
+
+        // 인가 사용자: 스크랩/라이크 상태 조회
         List<Long> postIds = posts.getContent().stream()
                 .map(Post::getId)
                 .toList();
 
-        // 사용자가 스크랩한 게시글 ID들 조회
         Set<Long> scrapedPostIds = scrapRepository.findScrapedPostIdsByUserIdAndPostIds(userId, postIds);
+        Set<Long> likedPostIds = likeRepository.findLikedPostIdsByUserIdAndPostIds(userId, postIds);
 
         // 스크랩 상태를 포함하여 응답 생성
-        return posts.map(post -> PostListResponse.from(post, scrapedPostIds.contains(post.getId())));
+        return posts.map(post -> PostListResponse.from(post, scrapedPostIds.contains(post.getId()), likedPostIds.contains(post.getId())));
     }
 
     @Transactional
@@ -72,8 +81,16 @@ public class PostService {
         postRepository.incrementViewCount(postId); // 동시성 문제 해결을 위해 DB에서 직접 조회
         Post post = getPost(postId);
 
-        boolean isScraped = scrapRepository.existsByUserIdAndPostId(userId, postId);
-        return PostResponse.from(post, isScraped);
+        boolean isScraped = false;
+        boolean isLiked = false;
+
+        // 인가 사용자일 때만 스크랩/추천 상태 조회
+        if (userId != null) {
+            isScraped = scrapRepository.existsByUserIdAndPostId(userId, postId);
+            isLiked = likeRepository.existsByUserIdAndPostId(userId, postId);
+        }
+
+        return PostResponse.from(post, isScraped, isLiked);
     }
 
     @Transactional
@@ -93,7 +110,8 @@ public class PostService {
 
         post.updatePost(request.quote(), request.author(), imageUrl);
         boolean isScraped = scrapRepository.existsByUserIdAndPostId(userId, postId);
-        return PostResponse.from(post, isScraped);
+        boolean isLiked = likeRepository.existsByUserIdAndPostId(userId, postId);
+        return PostResponse.from(post, isScraped, isLiked);
     }
 
     @Transactional
@@ -109,6 +127,26 @@ public class PostService {
         postRepository.delete(post);
     }
 
+    @Transactional
+    public void toggleLike(Long postId, Long userId) {
+        Post post = getPost(postId);
+        User user = getUser(userId);
+
+        boolean isLiked = likeRepository.existsByUserIdAndPostId(userId, postId);
+
+        if (isLiked) {
+            likeRepository.deleteByUserIdAndPostId(userId, postId);
+            post.decrementLikeCount();
+        } else {
+            Like like = Like.builder()
+                    .user(user)
+                    .post(post)
+                    .build();
+            likeRepository.save(like);
+            post.incrementLikeCount();
+        }
+    }
+
     public Page<PostListResponse> getMyPosts(Long userId, String keyword, Pageable pageable) {
         Page<Post> posts = postRepository.findByUserIdWithFilter(userId, keyword, pageable);
 
@@ -119,9 +157,10 @@ public class PostService {
 
         // 사용자가 스크랩한 게시글 ID들 조회
         Set<Long> scrapedPostIds = scrapRepository.findScrapedPostIdsByUserIdAndPostIds(userId, postIds);
+        Set<Long> likedPostIds = likeRepository.findLikedPostIdsByUserIdAndPostIds(userId, postIds);
 
         // 스크랩 상태를 포함하여 응답 생성
-        return posts.map(post -> PostListResponse.from(post, scrapedPostIds.contains(post.getId())));
+        return posts.map(post -> PostListResponse.from(post, scrapedPostIds.contains(post.getId()), likedPostIds.contains(post.getId())));
     }
 
     private User getUser(Long userId) {
