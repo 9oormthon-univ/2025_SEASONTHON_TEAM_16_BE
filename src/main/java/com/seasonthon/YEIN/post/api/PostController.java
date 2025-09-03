@@ -44,7 +44,7 @@ public class PostController {
     @Operation(summary = "게시글 목록 조회", description = "게시글 목록을 조회합니다. 키워드 검색 및 정렬이 가능합니다.")
     public ResponseEntity<ApiResponse<Page<PostListResponse>>> getPosts(
             @RequestParam(required = false) String keyword,
-            @Parameter(description = "정렬 방식 (latest: 최신순, view: 조회수순, scrap: 스크랩수순)", example = "latest")
+            @Parameter(description = "정렬 방식 (latest: 최신순, view: 조회수순, scrap: 스크랩수순, like: 추천수순)", example = "latest")
             @RequestParam(required = false) String sortBy,
             @Parameter(description = "페이징 정보")
             Pageable pageable,
