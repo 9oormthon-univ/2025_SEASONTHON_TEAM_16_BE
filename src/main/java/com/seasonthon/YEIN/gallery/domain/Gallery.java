@@ -8,6 +8,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "galleries")
 @Getter
@@ -49,10 +52,17 @@ public class Gallery extends BaseEntity {
     @Column(name = "detailed_analysis", columnDefinition = "TEXT")
     private String detailedAnalysis;
 
+    @Column(name = "title")
+    private String title;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "mood_tags")
+    private Set<MoodTag> moodTags = new HashSet<>();
+
     @Builder
     public Gallery(User user, String imageUrl, Integer alignmentScore, Integer spacingScore,
                    Integer consistencyScore, Integer lengthScore, Integer totalScore,
-                   String feedback, String strengths, String detailedAnalysis) {
+                   String feedback, String strengths, String detailedAnalysis, String title, Set<MoodTag> moodTags) {
         this.user = user;
         this.imageUrl = imageUrl;
         this.alignmentScore = alignmentScore;
@@ -63,5 +73,7 @@ public class Gallery extends BaseEntity {
         this.feedback = feedback;
         this.strengths = strengths;
         this.detailedAnalysis = detailedAnalysis;
+        this.title = title;
+        this.moodTags = moodTags != null ? moodTags : new HashSet<>();
     }
 }
