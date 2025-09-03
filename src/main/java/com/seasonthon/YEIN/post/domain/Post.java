@@ -36,6 +36,9 @@ public class Post extends BaseAuditEntity {
     @Column(name = "scrap_count", nullable = false)
     private Long scrapCount = 0L;
 
+    @Column(name = "like_count", nullable = false)
+    private Integer likeCount = 0;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -44,11 +47,14 @@ public class Post extends BaseAuditEntity {
     private List<Scrap> scraps = new ArrayList<>();
 
     @Builder
-    public Post(String quote, String author, String imageUrl, User user) {
+    public Post(User user, String quote, String author, String imageUrl) {
+        this.user = user;
         this.quote = quote;
         this.author = author;
         this.imageUrl = imageUrl;
-        this.user = user;
+        this.likeCount = 0;
+        this.viewCount = 0L;
+        this.scrapCount = 0L;
     }
 
     public void updatePost(String quote, String author, String imageUrl) {
@@ -68,6 +74,16 @@ public class Post extends BaseAuditEntity {
     public void decrementScrapCount() {
         if (this.scrapCount > 0) {
             this.scrapCount--;
+        }
+    }
+
+    public void incrementLikeCount() {
+        this.likeCount++;
+    }
+
+    public void decrementLikeCount() {
+        if (this.likeCount > 0) {
+            this.likeCount--;
         }
     }
 }

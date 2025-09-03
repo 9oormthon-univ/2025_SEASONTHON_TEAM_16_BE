@@ -17,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,12 +44,13 @@ public class PostController {
     @Operation(summary = "게시글 목록 조회", description = "게시글 목록을 조회합니다. 키워드 검색 및 정렬이 가능합니다.")
     public ResponseEntity<ApiResponse<Page<PostListResponse>>> getPosts(
             @RequestParam(required = false) String keyword,
-            @Parameter(description = "정렬 방식 (latest: 최신순, view: 조회수순, scrap: 스크랩수순)", example = "latest")
+            @Parameter(description = "정렬 방식 (latest: 최신순, view: 조회수순, scrap: 스크랩수순, like: 추천수순)", example = "latest")
             @RequestParam(required = false) String sortBy,
             @Parameter(description = "페이징 정보")
             Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Page<PostListResponse> response = postService.getPosts(keyword, sortBy, pageable, userDetails.getUserId());
+        Long userId = userDetails != null ? userDetails.getUserId() : null;
+        Page<PostListResponse> response = postService.getPosts(keyword, sortBy, pageable, userId);
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
 
@@ -59,8 +59,9 @@ public class PostController {
     public ResponseEntity<ApiResponse<PostResponse>> getPost(
             @Parameter(description = "게시글 ID", example = "1")
             @PathVariable Long postId,
-            @AuthenticationPrincipal CustomUserDetails UserDetails) {
-        PostResponse response = postService.getPostDetail(postId, UserDetails.getUserId());
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        Long userId = userDetails != null ? userDetails.getUserId() : null;
+        PostResponse response = postService.getPostDetail(postId,userId);
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
 
@@ -97,5 +98,16 @@ public class PostController {
             Pageable pageable) {
         Page<PostListResponse> response = postService.getMyPosts(userDetails.getUserId(), keyword, pageable);
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
+    }
+
+    @PostMapping("/{postId}/likes")
+    @Operation(summary = "게시글 추천", description = "게시글에 추천을 누르거나 취소합니다. (토글 방식)")
+    public ResponseEntity<ApiResponse<Void>> toggleLike(
+            @Parameter(description = "게시글 ID", example = "1")
+            @PathVariable Long postId,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        postService.toggleLike(postId, userDetails.getUserId());
+        return ResponseEntity.ok(ApiResponse.onSuccess(null));
     }
 }

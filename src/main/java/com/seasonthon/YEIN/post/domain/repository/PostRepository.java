@@ -14,15 +14,16 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Long> {
 
     @EntityGraph(attributePaths = "user")
-    @Query("SELECT p FROM Post p WHERE " +
-            "(:keyword IS NULL OR :keyword = '' OR " +
-            "LOWER(p.quote) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
-            "LOWER(p.author) LIKE LOWER(CONCAT('%', :keyword, '%'))) " +
-            "ORDER BY " +
-            "CASE WHEN :sortBy = 'view' THEN p.viewCount END DESC, " +
-            "CASE WHEN :sortBy = 'scrap' THEN p.scrapCount END DESC, " +
-            "CASE WHEN :sortBy = 'latest' THEN p.createdAt END DESC, " +
-            "p.createdAt DESC, p.id DESC")
+    @Query("""
+      SELECT p FROM Post p
+      WHERE (:keyword IS NULL OR p.quote LIKE %:keyword% OR p.author LIKE %:keyword%)
+      ORDER BY
+          CASE WHEN :sortBy = 'latest' THEN p.createdAt END DESC,
+          CASE WHEN :sortBy = 'view' THEN p.viewCount END DESC,
+          CASE WHEN :sortBy = 'scrap' THEN p.scrapCount END DESC,
+          CASE WHEN :sortBy = 'like' THEN p.likeCount END DESC,
+          p.createdAt DESC
+      """)
     Page<Post> findPostsWithFilter(@Param("keyword") String keyword, @Param("sortBy") String sortBy, Pageable pageable);
 
     @EntityGraph(attributePaths = "user")
