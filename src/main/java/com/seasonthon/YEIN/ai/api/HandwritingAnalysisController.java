@@ -33,7 +33,7 @@ public class HandwritingAnalysisController {
     @PostMapping(value = "/analyze", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<HandwritingAnalysisResponse>> analyzeHandwriting(
             @Parameter(description = "분석할 손글씨 이미지 파일 (JPG, PNG, WEBP 지원, 최대 10MB)", required = true)
-            @RequestParam("image") MultipartFile image,
+            @RequestPart("image") MultipartFile image,
             @Parameter(description = "갤러리 업로드 정보", required = true)
             @Valid @RequestPart("data") GalleryUploadRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) {

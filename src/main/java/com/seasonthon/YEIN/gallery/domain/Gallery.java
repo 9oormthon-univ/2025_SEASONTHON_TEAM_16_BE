@@ -55,8 +55,10 @@ public class Gallery extends BaseEntity {
     @Column(name = "title")
     private String title;
 
+    @ElementCollection(targetClass = MoodTag.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "gallery_mood_tags", joinColumns = @JoinColumn(name = "gallery_id"))
+    @Column(name = "mood_tag", nullable = false)
     @Enumerated(EnumType.STRING)
-    @Column(name = "mood_tags")
     private Set<MoodTag> moodTags = new HashSet<>();
 
     @Builder

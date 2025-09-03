@@ -33,7 +33,7 @@ public class PostController {
     public ResponseEntity<ApiResponse<PostResponse>> createPost(
             @RequestPart("data") @Valid PostRequest request,
             @Parameter(description = "이미지 파일 (선택사항)", schema = @Schema(type = "string", format = "binary"))
-            @RequestParam(required = false) MultipartFile image,
+            @RequestPart(value = "image", required = false) MultipartFile image,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         PostResponse response = postService.createPost(request, userDetails.getUserId(), image);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -72,7 +72,7 @@ public class PostController {
             @PathVariable Long postId,
             @RequestPart("data") @Valid PostRequest request,
             @Parameter(description = "이미지 파일 (선택사항)", schema = @Schema(type = "string", format = "binary"))
-            @RequestParam(required = false) MultipartFile image,
+            @RequestPart(value = "image", required = false) MultipartFile image,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
         PostResponse response = postService.updatePost(postId, request, userDetails.getUserId(), image);
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
