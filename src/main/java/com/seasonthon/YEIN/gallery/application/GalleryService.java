@@ -3,10 +3,10 @@ package com.seasonthon.YEIN.gallery.application;
 import com.seasonthon.YEIN.gallery.api.dto.response.GalleryDetailResponse;
 import com.seasonthon.YEIN.gallery.api.dto.response.GalleryResponse;
 import com.seasonthon.YEIN.gallery.domain.Gallery;
-import com.seasonthon.YEIN.gallery.domain.MoodTag;
 import com.seasonthon.YEIN.gallery.domain.repository.GalleryRepository;
 import com.seasonthon.YEIN.global.code.status.ErrorStatus;
 import com.seasonthon.YEIN.global.exception.GeneralException;
+import com.seasonthon.YEIN.global.s3.S3UploadService;
 import com.seasonthon.YEIN.user.domain.User;
 import com.seasonthon.YEIN.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +26,7 @@ public class GalleryService {
 
     private final GalleryRepository galleryRepository;
     private final UserRepository userRepository;
+    private final S3UploadService s3UploadService;
 
     public Page<GalleryResponse> getGalleriesWithFilters(Long userId, String period, Integer minScore, Integer maxScore, String sortBy, Pageable pageable) {
         LocalDateTime startDate = calculateStartDate(period);
@@ -51,6 +51,20 @@ public class GalleryService {
                 .orElseThrow(() -> new GeneralException(ErrorStatus.GALLERY_NOT_FOUND));
 
         return toGalleryDetailResponse(gallery);
+    }
+
+    @Transactional
+    public void deleteGallery(Long galleryId, Long userId) {
+        User user = getUser(userId);
+        Gallery gallery = galleryRepository.findByIdAndUser(galleryId, user)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.GALLERY_NOT_FOUND));
+
+        if (gallery.getImageUrl() != null && !gallery.getImageUrl().isEmpty())
+        {
+            s3UploadService.deleteFile(gallery.getImageUrl());
+        }
+
+        galleryRepository.delete(gallery);
     }
 
     private LocalDateTime calculateStartDate(String period) {

@@ -3,7 +3,6 @@ package com.seasonthon.YEIN.gallery.api;
 import com.seasonthon.YEIN.gallery.api.dto.response.GalleryDetailResponse;
 import com.seasonthon.YEIN.gallery.api.dto.response.GalleryResponse;
 import com.seasonthon.YEIN.gallery.application.GalleryService;
-import com.seasonthon.YEIN.gallery.domain.MoodTag;
 import com.seasonthon.YEIN.global.code.dto.ApiResponse;
 import com.seasonthon.YEIN.global.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,8 +15,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/galleries")
@@ -67,5 +64,16 @@ public class GalleryController {
 
         GalleryDetailResponse gallery = galleryService.getGalleryDetail(galleryId, userDetails.getUserId());
         return ResponseEntity.ok(ApiResponse.onSuccess(gallery));
+    }
+
+    @DeleteMapping("/{galleryId}")
+    @Operation(summary = "필사 갤러리 삭제", description = "작성자 본인만 필사 갤러리를 삭제할 수 있습니다.")
+    public ResponseEntity<ApiResponse<Void>> deleteGallery(
+            @Parameter(description = "삭제할 갤러리 ID", example = "1")
+            @PathVariable Long galleryId,
+            @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        galleryService.deleteGallery(galleryId, userDetails.getUserId());
+        return ResponseEntity.ok(ApiResponse.onSuccess(null));
     }
 }
