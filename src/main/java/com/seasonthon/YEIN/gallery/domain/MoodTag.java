@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum MoodTag {
     CALM("평온"),
-    FOCUSED("집중"),
+    JOY("기쁨"),
     DEPRESSED("우울");
 
     private final String description;

@@ -15,6 +15,6 @@ public record GalleryUploadRequest(
         @Size(max = 100, message = "제목은 100자 이하로 입력해주세요")
         String title,
 
-        @Schema(description = "기분 태그 (복수 선택 가능)", example = "[\"CALM\", \"FOCUSED\"]")
+        @Schema(description = "기분 태그 (복수 선택 가능)", example = "[\"CALM\", \"JOY\"]")
         Set<MoodTag> moodTags
 ) {}
