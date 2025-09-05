@@ -15,5 +15,8 @@ public record PostRequest(
         String quote,
 
         @Schema(description = "저자", example = "허버드")
-        String author
+        String author,
+
+        @Schema(description = "책 제목", example = "긍정의 힘")
+        String bookTitle
 ) {}

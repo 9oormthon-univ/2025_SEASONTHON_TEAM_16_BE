@@ -30,6 +30,9 @@ public class Post extends BaseAuditEntity {
     @Column(name = "author")
     private String author;
 
+    @Column(name = "book_title")
+    private String bookTitle;
+
     @Column(name = "image_url")
     private String imageUrl;
 
@@ -53,22 +56,24 @@ public class Post extends BaseAuditEntity {
     private List<Like> likes = new ArrayList<>();
 
     @Builder
-    public Post(User user, String title, String quote, String author, String imageUrl) {
+    public Post(User user, String title, String quote, String author, String imageUrl, String bookTitle) {
         this.user = user;
         this.title = title;
         this.quote = quote;
         this.author = author;
         this.imageUrl = imageUrl;
+        this.bookTitle = bookTitle;
         this.likeCount = 0;
         this.viewCount = 0L;
         this.scrapCount = 0L;
     }
 
-    public void updatePost(String title, String quote, String author, String imageUrl) {
+    public void updatePost(String title, String quote, String author, String imageUrl, String bookTitle) {
         this.title = title;
         this.quote = quote;
         this.author = author;
         this.imageUrl = imageUrl;
+        this.bookTitle = bookTitle;
     }
 
     public void incrementViewCount() {

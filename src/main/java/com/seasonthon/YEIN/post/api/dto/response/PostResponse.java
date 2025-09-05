@@ -20,6 +20,9 @@ public record PostResponse(
         @Schema(description = "저자", example = "허버드")
         String author,
 
+        @Schema(description = "책 제목", example = "긍정의 힘")
+        String bookTitle,
+
         @Schema(description = "이미지 URL", example = "https://example.com/image.jpg")
         String imageUrl,
 
@@ -54,6 +57,7 @@ public record PostResponse(
                 post.getTitle(),
                 post.getQuote(),
                 post.getAuthor(),
+                post.getBookTitle(),
                 post.getImageUrl(),
                 post.getViewCount(),
                 post.getScrapCount(),
