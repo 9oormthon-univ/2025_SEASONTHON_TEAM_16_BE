@@ -20,6 +20,9 @@ public record PostListResponse(
         @Schema(description = "저자", example = "허버드")
         String author,
 
+        @Schema(description = "책 제목", example = "긍정의 힘")
+        String bookTitle,
+
         @Schema(description = "작성자 닉네임", example = "글귀러버")
         String createdByNickname,
 
@@ -51,6 +54,7 @@ public record PostListResponse(
                 post.getTitle(),
                 post.getQuote(),
                 post.getAuthor(),
+                post.getBookTitle(),
                 post.getUser().getNickname(),
                 post.getCreatedAt(),
                 post.getViewCount(),
