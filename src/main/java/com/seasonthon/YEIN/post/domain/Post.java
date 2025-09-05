@@ -21,6 +21,9 @@ public class Post extends BaseAuditEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "title", nullable = false)
+    private String title;
+
     @Column(name = "quote", nullable = false, columnDefinition = "TEXT")
     private String quote;
 
@@ -50,8 +53,9 @@ public class Post extends BaseAuditEntity {
     private List<Like> likes = new ArrayList<>();
 
     @Builder
-    public Post(User user, String quote, String author, String imageUrl) {
+    public Post(User user, String title, String quote, String author, String imageUrl) {
         this.user = user;
+        this.title = title;
         this.quote = quote;
         this.author = author;
         this.imageUrl = imageUrl;
@@ -60,7 +64,8 @@ public class Post extends BaseAuditEntity {
         this.scrapCount = 0L;
     }
 
-    public void updatePost(String quote, String author, String imageUrl) {
+    public void updatePost(String title, String quote, String author, String imageUrl) {
+        this.title = title;
         this.quote = quote;
         this.author = author;
         this.imageUrl = imageUrl;
