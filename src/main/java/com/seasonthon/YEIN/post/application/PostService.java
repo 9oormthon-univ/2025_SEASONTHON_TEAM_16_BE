@@ -45,6 +45,7 @@ public class PostService {
         }
 
         Post post = Post.builder()
+                .title(request.title())
                 .quote(request.quote())
                 .author(request.author())
                 .imageUrl(imageUrl)
@@ -108,7 +109,7 @@ public class PostService {
             imageUrl = s3UploadService.uploadFile(image);
         }
 
-        post.updatePost(request.quote(), request.author(), imageUrl);
+        post.updatePost(request.title(), request.quote(), request.author(), imageUrl);
         boolean isScraped = scrapRepository.existsByUserIdAndPostId(userId, postId);
         boolean isLiked = likeRepository.existsByUserIdAndPostId(userId, postId);
         return PostResponse.from(post, isScraped, isLiked);

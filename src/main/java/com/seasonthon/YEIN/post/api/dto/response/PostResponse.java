@@ -14,6 +14,9 @@ public record PostResponse(
         @Schema(description = "문구 내용", example = "행복은 습관이다.")
         String quote,
 
+        @Schema(description = "게시글 제목", example = "오늘의 명언")
+        String title,
+
         @Schema(description = "저자", example = "허버드")
         String author,
 
@@ -48,6 +51,7 @@ public record PostResponse(
     public static PostResponse from(Post post, Boolean isScraped, Boolean isLiked) {
         return new PostResponse(
                 post.getId(),
+                post.getTitle(),
                 post.getQuote(),
                 post.getAuthor(),
                 post.getImageUrl(),
