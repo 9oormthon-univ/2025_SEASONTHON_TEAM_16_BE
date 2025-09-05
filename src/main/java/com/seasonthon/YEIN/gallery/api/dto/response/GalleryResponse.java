@@ -15,7 +15,7 @@ public record GalleryResponse(
         @Schema(description = "필사 제목", example = "오늘의 독서 필사")
         String title,
 
-        @Schema(description = "기분 태그", example = "[\"CALM\", \"FOCUSED\"]")
+        @Schema(description = "기분 태그", example = "[\"CALM\", \"JOY\"]")
         Set<MoodTag> moodTags,
 
         @Schema(description = "필사 이미지 S3 URL", example = "https://bucket-name.s3.region.amazonaws.com/uploads/image123.jpg")
