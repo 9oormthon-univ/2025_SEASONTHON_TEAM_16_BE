@@ -1,5 +1,6 @@
 package com.seasonthon.YEIN.post.domain;
 
+import com.seasonthon.YEIN.comment.domain.Comment;
 import com.seasonthon.YEIN.global.entity.BaseAuditEntity;
 import com.seasonthon.YEIN.user.domain.User;
 import jakarta.persistence.*;
@@ -55,6 +56,12 @@ public class Post extends BaseAuditEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Like> likes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
+
+    @Column(name = "comment_count", nullable = false)
+    private Integer commentCount = 0;
+
     @Builder
     public Post(User user, String title, String quote, String author, String imageUrl, String bookTitle) {
         this.user = user;
@@ -97,6 +104,16 @@ public class Post extends BaseAuditEntity {
     public void decrementLikeCount() {
         if (this.likeCount > 0) {
             this.likeCount--;
+        }
+    }
+
+    public void incrementCommentCount() {
+        this.commentCount++;
+    }
+
+    public void decrementCommentCount() {
+        if (this.commentCount > 0) {
+            this.commentCount--;
         }
     }
 }

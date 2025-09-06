@@ -38,6 +38,7 @@ public enum ErrorStatus implements BaseErrorCode {
     PET_NOT_FOUND(HttpStatus.NOT_FOUND, "PET4044", "펫을 찾을 수 없습니다."),
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST4045", "게시글을 찾을 수 없습니다."),
     GALLERY_NOT_FOUND(HttpStatus.NOT_FOUND, "GALLERY4046", "갤러리를 찾을 수 없습니다."),
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT4047", "댓글을 찾을 수 없습니다."),
 
     // 405 Method Not Allowed
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "COMMON405", "허용되지 않는 HTTP 메서드입니다."),
