@@ -2,6 +2,7 @@ package com.seasonthon.YEIN.pet.application;
 
 import com.seasonthon.YEIN.global.code.status.ErrorStatus;
 import com.seasonthon.YEIN.global.exception.GeneralException;
+import com.seasonthon.YEIN.pet.api.dto.request.PetNameUpdateRequest;
 import com.seasonthon.YEIN.pet.api.dto.request.PetUpdateRequest;
 import com.seasonthon.YEIN.pet.api.dto.response.PetStatusResponse;
 import com.seasonthon.YEIN.pet.domain.PetType;
@@ -28,20 +29,23 @@ public class PetService {
     public PetStatusResponse updatePet(Long userId, PetUpdateRequest request) {
         User user = getUser(userId);
 
-        if (request.petType() == PetType.DEFAULT) {
-            throw new GeneralException(ErrorStatus.CANNOT_CHANGE_TO_DEFAULT_PET);
-        }
-
         // 현재 활성화된 펫 타입 변경
         user.updateCurrentPetType(request.petType());
         userRepository.save(user); // User 엔티티 저장하여 currentPetType 변경사항 반영
 
-        // 변경된 펫 타입의 UserPet 엔티티를 찾거나 생성
-        UserPet userPet = findOrCreateUserPet(user, request.petType());
+        // 변경된 펫 타입의 UserPet 엔티티를 찾거나 생성 (이름 변경 없음)
+        findOrCreateUserPet(user, request.petType());
 
-        // 펫 이름 업데이트
+        return getPetStatus(userId);
+    }
+
+    @Transactional
+    public PetStatusResponse updatePetName(Long userId, PetNameUpdateRequest request) {
+        User user = getUser(userId);
+        UserPet userPet = findOrCreateUserPet(user, user.getCurrentPetType());
+
         userPet.updatePetDetails(request.name());
-        userPetRepository.save(userPet); // UserPet 엔티티 저장
+        userPetRepository.save(userPet);
 
         return getPetStatus(userId);
     }
@@ -90,7 +94,7 @@ public class PetService {
                     UserPet defaultUserPet = UserPet.builder()
                             .user(user)
                             .petType(actualPetType)
-                            .name(actualPetType.name()) // 기본 이름은 펫 타입 이름으로 설정
+                            .name(actualPetType.getDefaultName()) // 기본 이름 사용
                             .level(1)
                             .currentXp(0)
                             .evolutionStage(0)
