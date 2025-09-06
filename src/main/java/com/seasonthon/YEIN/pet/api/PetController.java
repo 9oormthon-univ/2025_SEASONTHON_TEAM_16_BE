@@ -2,6 +2,7 @@ package com.seasonthon.YEIN.pet.api;
 
 import com.seasonthon.YEIN.global.code.dto.ApiResponse;
 import com.seasonthon.YEIN.global.security.CustomUserDetails;
+import com.seasonthon.YEIN.pet.api.dto.request.PetNameUpdateRequest;
 import com.seasonthon.YEIN.pet.api.dto.request.PetUpdateRequest;
 import com.seasonthon.YEIN.pet.api.dto.response.PetStatusResponse;
 import com.seasonthon.YEIN.pet.application.PetService;
@@ -30,11 +31,20 @@ public class PetController {
     }
 
     @PatchMapping("/me")
-    @Operation(summary = "내 펫 변경", description = "로그인한 사용자의 펫 종류와 이름을 변경합니다. DEFAULT 타입으로는 변경할 수 없습니다.")
+    @Operation(summary = "내 펫 변경", description = "로그인한 사용자의 펫 종류를 변경합니다. 펫 이름은 해당 펫의 기본값 또는 이전에 설정한 이름으로 설정됩니다.")
     public ResponseEntity<ApiResponse<PetStatusResponse>> updateMyPet(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @Valid @RequestBody PetUpdateRequest request) {
         PetStatusResponse response = petService.updatePet(userDetails.getUserId(), request);
+        return ResponseEntity.ok(ApiResponse.onSuccess(response));
+    }
+
+    @PatchMapping("/me/name")
+    @Operation(summary = "내 펫 이름 변경", description = "현재 활성화된 펫의 이름을 변경합니다.")
+    public ResponseEntity<ApiResponse<PetStatusResponse>> updateMyPetName(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @Valid @RequestBody PetNameUpdateRequest request) {
+        PetStatusResponse response = petService.updatePetName(userDetails.getUserId(), request);
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
 
