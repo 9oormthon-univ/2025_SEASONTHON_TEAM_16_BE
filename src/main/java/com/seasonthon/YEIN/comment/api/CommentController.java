@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -38,11 +37,10 @@ public class CommentController {
 
     @Operation(summary = "게시글 댓글 조회", description = "특정 게시글의댓글 목록을 조회합니다.")
     @GetMapping("/posts/{postId}")
-    public ResponseEntity<ApiResponse<Page<CommentResponse>>>
-    findCommentsByPost(
+    public ResponseEntity<ApiResponse<Page<CommentResponse>>> findCommentsByPost(
             @Parameter(description = "게시글 ID") @PathVariable Long postId,
+            @Parameter(description = "페이징 정보") Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Pageable pageable = PageRequest.of(0, 20);
         Long currentUserId = userDetails != null ? userDetails.getUserId() : null;
 
         Page<CommentResponse> comments = commentService.findCommentsByPost(postId, pageable, currentUserId);
@@ -52,10 +50,8 @@ public class CommentController {
     @Operation(summary = "내 댓글 조회", description = "내가 작성한 댓글 목록을 조회합니다.")
     @GetMapping("/my")
     public ResponseEntity<ApiResponse<Page<MyCommentResponse>>> findMyComments(
-            @Parameter(description = "페이지 번호") @RequestParam(defaultValue = "0") int page,
-            @Parameter(description = "페이지 크기") @RequestParam(defaultValue = "20") int size,
+            @Parameter(description = "페이징 정보") Pageable pageable,
             @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Pageable pageable = PageRequest.of(page, size);
         Page<MyCommentResponse> comments = commentService.findMyComments(userDetails.getUserId(), pageable);
         return ResponseEntity.ok(ApiResponse.onSuccess(comments));
     }
