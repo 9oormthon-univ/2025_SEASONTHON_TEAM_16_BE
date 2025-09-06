@@ -33,7 +33,7 @@ public class PetService {
         }
 
         // 현재 활성화된 펫 타입 변경
-        user.setCurrentPetType(request.petType());
+        user.updateCurrentPetType(request.petType());
         userRepository.save(user); // User 엔티티 저장하여 currentPetType 변경사항 반영
 
         // 변경된 펫 타입의 UserPet 엔티티를 찾거나 생성
@@ -100,7 +100,7 @@ public class PetService {
 
                     // 사용자의 currentPetType이 설정되지 않았다면 설정
                     if (user.getCurrentPetType() == null) {
-                        user.setCurrentPetType(actualPetType);
+                        user.updateCurrentPetType(actualPetType);
                         userRepository.save(user); // User 엔티티 저장
                     }
                     return defaultUserPet;
