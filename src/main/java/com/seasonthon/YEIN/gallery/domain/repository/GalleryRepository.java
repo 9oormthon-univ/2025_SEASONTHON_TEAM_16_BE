@@ -1,7 +1,6 @@
 package com.seasonthon.YEIN.gallery.domain.repository;
 
 import com.seasonthon.YEIN.gallery.domain.Gallery;
-import com.seasonthon.YEIN.gallery.domain.MoodTag;
 import com.seasonthon.YEIN.user.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,7 +10,6 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.Set;
 
 public interface GalleryRepository extends JpaRepository<Gallery, Long> {
 

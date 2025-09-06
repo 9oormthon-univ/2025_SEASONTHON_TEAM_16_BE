@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +36,7 @@ public class GalleryService {
         Page<Gallery> galleries = galleryRepository.findGalleriesWithDynamicSort(
                 user,
                 startDate,
-                LocalDateTime.now(),
+                LocalDateTime.now(ZoneId.of("Asia/Seoul")),
                 minScore,
                 maxScore,
                 sortBy,
@@ -69,11 +70,13 @@ public class GalleryService {
 
     private LocalDateTime calculateStartDate(String period) {
         if (period == null) return null;
+        
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
         return switch (period.toLowerCase()) {
-            case "today" -> LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);
-            case "week" -> LocalDateTime.now().minusWeeks(1);
-            case "month" -> LocalDateTime.now().minusMonths(1);
+            case "today" -> now.withHour(0).withMinute(0).withSecond(0).withNano(0);
+            case "week" -> now.minusWeeks(1);
+            case "month" -> now.minusMonths(1);
             case "all" -> null;
             default -> null;
         };

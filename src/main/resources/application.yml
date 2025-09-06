@@ -4,7 +4,9 @@ server:
 
 spring:
   profiles:
-    active: prod
+    active: local
+  jackson:
+    time-zone: Asia/Seoul
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:9roomthon}
@@ -17,6 +19,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        jdbc:
+          time_zone: Asia/Seoul
     show-sql: true
     open-in-view: false
 
