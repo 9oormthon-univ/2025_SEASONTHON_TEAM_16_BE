@@ -33,7 +33,7 @@ public class GalleryController {
             @Parameter(description = "페이지 크기", example = "20")
             @RequestParam(defaultValue = "20") int size,
 
-            @Parameter(description = "기간 필터링 옵션: week(최근 7일), month(최근 30일), all(전체 기간, 생략시 기본값)", example = "week")
+            @Parameter(description = "기간 필터링 옵션: today(당일), week(최근 7일), month(최근 30일), all(전체 기간, 생략시 기본값)", example = "week")
             @RequestParam(required = false) String period,
 
             @Parameter(description = "최소 점수 (0-100)", example = "70")
