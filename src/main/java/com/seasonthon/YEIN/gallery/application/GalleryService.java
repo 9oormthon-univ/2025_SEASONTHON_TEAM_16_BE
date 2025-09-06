@@ -71,6 +71,7 @@ public class GalleryService {
         if (period == null) return null;
 
         return switch (period.toLowerCase()) {
+            case "today" -> LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);
             case "week" -> LocalDateTime.now().minusWeeks(1);
             case "month" -> LocalDateTime.now().minusMonths(1);
             case "all" -> null;
