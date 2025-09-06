@@ -18,6 +18,7 @@ public enum ErrorStatus implements BaseErrorCode {
     FILE_SIZE_EXCEEDED(HttpStatus.BAD_REQUEST, "FILE4006", "파일 크기가 10MB를 초과했습니다."),
     INVALID_FILE_TYPE(HttpStatus.BAD_REQUEST, "FILE4007", "지원하지 않는 파일 형식입니다. (JPG, PNG, WEBP만 지원)"),
     INVALID_FILE_NAME(HttpStatus.BAD_REQUEST, "FILE4008", "유효하지 않은 파일명입니다."),
+    CANNOT_CHANGE_TO_DEFAULT_PET(HttpStatus.BAD_REQUEST, "PET4009", "기본 펫으로는 변경할 수 없습니다."),
 
     // 401 Unauthorized
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "AUTH401", "인증이 필요합니다."),
@@ -34,8 +35,9 @@ public enum ErrorStatus implements BaseErrorCode {
     RESOURCE_NOT_FOUND(HttpStatus.NOT_FOUND, "GEN4041", "리소스를 찾을 수 없습니다."),
     ENDPOINT_NOT_FOUND(HttpStatus.NOT_FOUND, "GEN4042", "존재하지 않는 엔드포인트입니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4043", "사용자를 찾을 수 없습니다."),
-    GALLERY_NOT_FOUND(HttpStatus.NOT_FOUND, "GALLERY4044", "필사 갤러리를 찾을 수 없습니다."),
+    PET_NOT_FOUND(HttpStatus.NOT_FOUND, "PET4044", "펫을 찾을 수 없습니다."),
     POST_NOT_FOUND(HttpStatus.NOT_FOUND, "POST4045", "게시글을 찾을 수 없습니다."),
+    GALLERY_NOT_FOUND(HttpStatus.NOT_FOUND, "GALLERY4046", "갤러리를 찾을 수 없습니다."),
 
     // 405 Method Not Allowed
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "COMMON405", "허용되지 않는 HTTP 메서드입니다."),
