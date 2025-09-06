@@ -12,11 +12,14 @@ import com.seasonthon.YEIN.gallery.domain.repository.GalleryRepository;
 import com.seasonthon.YEIN.global.code.status.ErrorStatus;
 import com.seasonthon.YEIN.global.exception.GeneralException;
 import com.seasonthon.YEIN.global.s3.S3UploadService;
+import com.seasonthon.YEIN.pet.api.dto.response.PetStatusResponse;
+import com.seasonthon.YEIN.pet.application.PetService;
 import com.seasonthon.YEIN.user.domain.User;
 import com.seasonthon.YEIN.user.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -33,12 +36,14 @@ public class HandwritingAnalysisService {
     private final S3UploadService s3UploadService;
     private final GalleryRepository galleryRepository;
     private final UserRepository userRepository;
+    private final PetService petService; // PetService 주입
 
     private static final List<String> ALLOWED_TYPES = Arrays.asList(
             "image/jpeg", "image/jpg", "image/png", "image/webp"
     );
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
+    @Transactional // 트랜잭션 추가
     public HandwritingAnalysisResponse analyzeHandwriting(MultipartFile image, GalleryUploadRequest request, Long userId) {
         String imageUrl = null;
 
@@ -54,10 +59,16 @@ public class HandwritingAnalysisService {
 
             User user = getUser(userId);
             saveToGallery(user, imageUrl, request, response);
+
+            // 4. 펫에게 경험치 추가
+            PetStatusResponse petStatus = petService.addXpToPet(userId, response.totalScore());
+            log.info("User {}'s pet received {} XP. Current level: {}, Current XP: {}",
+                    userId, response.totalScore(), petStatus.level(), petStatus.currentXp());
+
             return response;
 
         } catch (Exception e) {
-            // 4. 분석 실패 시 업로드된 이미지 삭제
+            // 5. 분석 실패 시 업로드된 이미지 삭제
             if (imageUrl != null) {
                 cleanupFailedUpload(imageUrl);
             }
