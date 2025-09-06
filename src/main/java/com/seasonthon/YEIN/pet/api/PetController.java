@@ -21,10 +21,6 @@ public class PetController {
 
     private final PetService petService;
 
-
-
-
-
     @GetMapping("/me")
     @Operation(summary = "내 펫 상태 조회", description = "로그인한 사용자의 펫 이름, 종류, 레벨, 경험치, 진화 상태를 조회합니다.")
     public ResponseEntity<ApiResponse<PetStatusResponse>> getMyPetStatus(
@@ -42,12 +38,4 @@ public class PetController {
         return ResponseEntity.ok(ApiResponse.onSuccess(response));
     }
 
-    @PostMapping("/me/add-xp")
-    @Operation(summary = "[테스트용] 내 펫 경험치 추가", description = "로그인한 사용자의 펫에게 경험치를 추가합니다. 레벨업 및 진화 테스트를 위한 임시 API입니다.")
-    public ResponseEntity<ApiResponse<PetStatusResponse>> addXpToMyPet(
-            @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestParam int xp) {
-        PetStatusResponse response = petService.addXpToPet(userDetails.getUserId(), xp);
-        return ResponseEntity.ok(ApiResponse.onSuccess(response));
-    }
 }
