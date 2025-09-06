@@ -7,11 +7,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter; // Setter 추가
 
 @Entity
 @Getter
-@Setter // Setter 추가 (비즈니스 로직 내에서만 사용)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserPet extends BaseEntity {
 
@@ -28,7 +26,7 @@ public class UserPet extends BaseEntity {
     private PetType petType;
 
     @Column(nullable = true)
-    private String name; // 펫 이름은 UserPet에 저장
+    private String name;
 
     @Column(nullable = false)
     private int level;
@@ -89,7 +87,7 @@ public class UserPet extends BaseEntity {
         // 배열 인덱스는 0부터 시작하므로 level-1
         return XP_REQUIRED_PER_LEVEL_RANGE[this.level - 1];
     }
-    
+
     // 진화 로직
     private void checkAndPerformEvolution() {
         if (this.level == 10 && this.evolutionStage < 1) {

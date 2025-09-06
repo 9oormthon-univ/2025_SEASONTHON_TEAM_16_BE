@@ -28,19 +28,19 @@ public class PetService {
     public PetStatusResponse updatePet(Long userId, PetUpdateRequest request) {
         User user = getUser(userId);
 
-        if (request.getPetType() == PetType.DEFAULT) {
+        if (request.petType() == PetType.DEFAULT) {
             throw new GeneralException(ErrorStatus.CANNOT_CHANGE_TO_DEFAULT_PET);
         }
 
         // 현재 활성화된 펫 타입 변경
-        user.setCurrentPetType(request.getPetType());
+        user.setCurrentPetType(request.petType());
         userRepository.save(user); // User 엔티티 저장하여 currentPetType 변경사항 반영
 
         // 변경된 펫 타입의 UserPet 엔티티를 찾거나 생성
-        UserPet userPet = findOrCreateUserPet(user, request.getPetType());
+        UserPet userPet = findOrCreateUserPet(user, request.petType());
 
         // 펫 이름 업데이트
-        userPet.updatePetDetails(request.getName());
+        userPet.updatePetDetails(request.name());
         userPetRepository.save(userPet); // UserPet 엔티티 저장
 
         return getPetStatus(userId);
