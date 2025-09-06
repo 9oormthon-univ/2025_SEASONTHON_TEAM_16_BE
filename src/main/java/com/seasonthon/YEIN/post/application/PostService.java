@@ -180,4 +180,22 @@ public class PostService {
             throw new GeneralException(ErrorStatus.FORBIDDEN);
         }
     }
+
+    public Page<PostListResponse> getLikedPosts(Long userId, Pageable pageable) {
+        Page<Post> posts = likeRepository.findLikedPostsByUserId(userId, pageable);
+        List<Long> postIds = posts.getContent().stream()
+                .map(Post::getId)
+                .toList();
+        Set<Long> scrapedPostIds = scrapRepository.findScrapedPostIdsByUserIdAndPostIds(userId, postIds);
+        return posts.map(post -> PostListResponse.from(post, scrapedPostIds.contains(post.getId()), true));
+    }
+
+    public Page<PostListResponse> getScrapedPosts(Long userId, Pageable pageable) {
+        Page<Post> posts = scrapRepository.findScrapedPostsByUserIdWithFilter(userId, null, "scrap_date", pageable);
+        List<Long> postIds = posts.getContent().stream()
+                .map(Post::getId)
+                .toList();
+        Set<Long> likedPostIds = likeRepository.findLikedPostIdsByUserIdAndPostIds(userId, postIds);
+        return posts.map(post -> PostListResponse.from(post, true, likedPostIds.contains(post.getId())));
+    }
 }

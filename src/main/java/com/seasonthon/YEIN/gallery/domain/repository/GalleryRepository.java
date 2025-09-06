@@ -10,12 +10,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 public interface GalleryRepository extends JpaRepository<Gallery, Long> {
 
     Optional<Gallery> findByIdAndUser(Long id, User user);
+
+    List<Gallery> findByUser(User user);
 
     @Query("SELECT g FROM Gallery g " +
             "WHERE g.user = :user " +
@@ -38,4 +41,6 @@ public interface GalleryRepository extends JpaRepository<Gallery, Long> {
             @Param("sortBy") String sortBy,
             Pageable pageable
     );
+
+    long countByUserAndCreatedAtBetween(User user, LocalDateTime startOfDay, LocalDateTime endOfDay);
 }
